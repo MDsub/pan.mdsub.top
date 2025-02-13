@@ -23,6 +23,8 @@
 ## 主要改进
 相比 [onedrive-cf-index-ng](https://github.com/lyc8503/onedrive-cf-index-ng):
 - 🚀 通过 Cloudflare 网络代理下载
+- 🔍 使用 Microsoft Graph Search API 改进搜索
+  * 原版使用 OneDrive Search API，这会随机性地缺漏文件，已基本不可用
 - 🔐 通过以下方式提高安全性:
   - 支持使用 TOTP 而不是密码
   - 在环境变量中设置自定义 AES 密钥和客户端密钥

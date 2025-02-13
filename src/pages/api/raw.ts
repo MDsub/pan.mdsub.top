@@ -2,8 +2,8 @@ import { posix as pathPosix } from 'path-browserify'
 import axios from 'redaxios'
 
 import siteConfig from '../../../config/site.config'
-import { driveApi, cacheControlHeader } from '../../../config/api.config'
-import { encodePath, getAccessToken, checkAuthRoute } from '.'
+import { cacheControlHeader, driveApi } from '../../../config/api.config'
+import { checkAuthRoute, encodePath, getAccessToken } from '.'
 import { NextRequest } from 'next/server'
 
 export const runtime = 'edge'
@@ -24,9 +24,9 @@ export default async function handler(req: NextRequest): Promise<Response> {
   const cleanPath = pathPosix.resolve('/', pathPosix.normalize(path)).replace('.password', '').replace('.totp', '')
 
   // Handle protected routes authentication
-  const odTokenHeader = (req.headers.get('od-protected-token') as string) ?? odpt
+  const token = (req.headers.get('opt-auth-token') as string) ?? decodeURIComponent(odpt)
 
-  const { code, message } = await checkAuthRoute(cleanPath, accessToken, odTokenHeader)
+  const { code, message } = await checkAuthRoute(cleanPath, accessToken, '', token)
   // Status code other than 200 means user has not authenticated yet
   if (code !== 200) {
     return new Response(JSON.stringify({ error: message }), { status: code })

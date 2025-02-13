@@ -54,13 +54,11 @@ export type OdThumbnail = {
   small: { height: number; width: number; url: string }
 }
 // API response object for /api/search/?q=<query>. Likewise, this array of items may also contain either files or folders.
+// Now /api/search returns an id only since we use MS Graph Search endpoint to search, and it doesn't support some key properties.
+// Client side should use this id to call /api/item,
+// the reason not using OneDrive Search API: https://github.com/EFLKumo/OnePortal/issues/2
 export type OdSearchResult = Array<{
   id: string
-  name: string
-  file?: OdFileObject
-  folder?: OdFolderObject
-  path: string
-  parentReference: { id: string; name: string; path: string }
 }>
 // API response object for /api/item/?id={id}. This is primarily used for determining the path of the driveItem by ID.
 export type OdDriveItem = {
@@ -69,4 +67,6 @@ export type OdDriveItem = {
   id: string
   name: string
   parentReference: { driveId: string; driveType: string; id: string; path: string }
+  file?: { mimeType: string; hashes: { quickXorHash?: string; sha1Hash?: string; sha256Hash?: string } }
+  folder?: { childCount: number; view?: { sortBy?: string; sortOrder?: 'ascending'; viewType?: 'thumbnails' } }
 }

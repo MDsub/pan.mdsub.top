@@ -67,7 +67,7 @@ export const DownloadButton = ({
 
 const DownloadButtonGroup = () => {
   const { asPath } = useRouter()
-  const hashedToken = getStoredToken(asPath)
+  const [_, token] = getStoredToken(asPath)
 
   const clipboard = useClipboard()
   const [menuOpen, setMenuOpen] = useState(false)
@@ -77,7 +77,9 @@ const DownloadButtonGroup = () => {
       <CustomEmbedLinkMenu menuOpen={menuOpen} setMenuOpen={setMenuOpen} path={asPath} />
       <div className="flex flex-wrap justify-center gap-2">
         <DownloadButton
-          onClickCallback={() => window.open(`/api/raw?path=${asPath}${hashedToken ? `&odpt=${hashedToken}` : ''}`)}
+          onClickCallback={() =>
+            window.open(`/api/raw?path=${asPath}${token ? `&odpt=${encodeURIComponent(token)}` : ''}`)
+          }
           btnColor="blue"
           btnText={'Download'}
           btnIcon="file-download"
@@ -85,7 +87,7 @@ const DownloadButtonGroup = () => {
         />
         <DownloadButton
           onClickCallback={() =>
-            window.open(`/api/raw?path=${asPath}${hashedToken ? `&odpt=${hashedToken}` : ''}&proxy=true`)
+            window.open(`/api/raw?path=${asPath}${token ? `&odpt=${encodeURIComponent(token)}` : ''}&proxy=true`)
           }
           btnColor="yellow"
           btnText={'Proxy Download'}
@@ -95,7 +97,7 @@ const DownloadButtonGroup = () => {
         />
         <DownloadButton
           onClickCallback={() => {
-            clipboard.copy(`${getBaseUrl()}/api/raw?path=${asPath}${hashedToken ? `&odpt=${hashedToken}` : ''}`)
+            clipboard.copy(`${getBaseUrl()}/api/raw?path=${asPath}${token ? `&odpt=${encodeURIComponent(token)}` : ''}`)
             toast.success('Copied direct link to clipboard.')
           }}
           btnColor="pink"
@@ -106,7 +108,7 @@ const DownloadButtonGroup = () => {
         <DownloadButton
           onClickCallback={() => {
             clipboard.copy(
-              `${getBaseUrl()}/api/raw?path=${asPath}${hashedToken ? `&odpt=${hashedToken}` : ''}&proxy=true`,
+              `${getBaseUrl()}/api/raw?path=${asPath}${token ? `&odpt=${encodeURIComponent(token)}` : ''}&proxy=true`,
             )
             toast.success('Copied proxy link to clipboard.')
           }}

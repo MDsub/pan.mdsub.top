@@ -2,66 +2,65 @@ import '@fortawesome/fontawesome-svg-core/styles.css'
 
 import '../styles/globals.css'
 import '../styles/markdown-github.css'
-
-// Require had to be used to prevent SSR failure in Next.js
-// Related discussion: https://github.com/FortAwesome/Font-Awesome/issues/19348
-const { library, config } = require('@fortawesome/fontawesome-svg-core')
-config.autoAddCss = false
-
 import {
+  faArrowAltCircleDown,
+  faCheckCircle,
+  faCopy,
+  faEnvelope,
+  faFile,
+  faFileAlt,
+  faFileArchive,
+  faFileAudio,
+  faFileCode,
+  faFileExcel,
   faFileImage,
   faFilePdf,
-  faFileWord,
   faFilePowerpoint,
-  faFileExcel,
-  faFileAudio,
   faFileVideo,
-  faFileArchive,
-  faFileCode,
-  faFileAlt,
-  faFile,
-  faFolder,
-  faCopy,
-  faArrowAltCircleDown,
-  faTrashAlt,
-  faEnvelope,
+  faFileWord,
   faFlag,
-  faCheckCircle,
+  faFolder,
+  faTrashAlt,
 } from '@fortawesome/free-regular-svg-icons'
 import {
-  faSearch,
-  faPen,
-  faCheck,
-  faPlus,
-  faMinus,
-  faCopy as faCopySolid,
   faAngleRight,
-  faDownload,
-  faMusic,
   faArrowLeft,
   faArrowRight,
-  faFileDownload,
-  faUndo,
   faBook,
-  faKey,
-  faSignOutAlt,
-  faCloud,
+  faCheck,
   faChevronCircleDown,
   faChevronDown,
-  faLink,
-  faExternalLinkAlt,
+  faCloud,
+  faCopy as faCopySolid,
+  faDownload,
   faExclamationCircle,
   faExclamationTriangle,
+  faExternalLinkAlt,
+  faFileDownload,
+  faHome,
+  faKey,
+  faLanguage,
+  faLink,
+  faMinus,
+  faMusic,
+  faPen,
+  faPlus,
+  faSearch,
+  faSignOutAlt,
   faTh,
   faThLarge,
   faThList,
-  faHome,
-  faLanguage,
+  faUndo,
 } from '@fortawesome/free-solid-svg-icons'
 import * as Icons from '@fortawesome/free-brands-svg-icons'
 
 import type { AppProps } from 'next/app'
 import NextNProgress from 'nextjs-progressbar'
+
+// Require had to be used to prevent SSR failure in Next.js
+// Related discussion: https://github.com/FortAwesome/Font-Awesome/issues/19348
+const { library, config } = require('@fortawesome/fontawesome-svg-core')
+config.autoAddCss = false
 
 // import all brand icons with tree-shaking so all icons can be referenced in the app
 const iconList = Object.keys(Icons)

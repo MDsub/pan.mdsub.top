@@ -1,10 +1,16 @@
 import siteConfig from '../../config/site.config'
 
-// Fetch stored token from localStorage and encrypt with SHA256
-export function getStoredToken(path: string): string | null {
-  const storedToken =
-    typeof window !== 'undefined' ? JSON.parse(localStorage.getItem(matchProtectedRoute(path)) as string) : ''
-  return storedToken ? storedToken : null
+// Fetch stored token from localStorage
+export function getStoredToken(path: string): [string | '', string | ''] {
+  const pass =
+    typeof window !== 'undefined'
+      ? JSON.parse(localStorage.getItem(`opt-auth-pass-${encodeURIComponent(matchProtectedRoute(path))}`) as string)
+      : ''
+  const token =
+    typeof window !== 'undefined'
+      ? JSON.parse(localStorage.getItem(`opt-auth-token-${encodeURIComponent(matchProtectedRoute(path))}`) as string)
+      : ''
+  return [pass ? pass : '', token ? token : ''] as const
 }
 
 /**

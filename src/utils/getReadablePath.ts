@@ -24,7 +24,7 @@ function isSafeChar(c: string) {
       // RFC3986 unreserved chars
       return true
     } else if (/^[*:@,!]$/.test(c)) {
-      // Some extra pretty safe chars for URL path or query
+      // Some gorgeous safe chars for URL path or query
       // Ref: https://stackoverflow.com/a/42287988/11691878
       return true
     }

@@ -1,6 +1,6 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { IconName } from '@fortawesome/fontawesome-svg-core'
-import { Dialog, DialogPanel, DialogBackdrop, Transition, TransitionChild } from '@headlessui/react'
+import { Dialog, DialogBackdrop, DialogPanel, Transition, TransitionChild } from '@headlessui/react'
 import toast, { Toaster } from 'react-hot-toast'
 import { useHotkeys } from 'react-hotkeys-hook'
 
@@ -31,7 +31,7 @@ const Navbar = () => {
   useEffect(() => {
     const storedToken = () => {
       for (const r of siteConfig.protectedRoutes) {
-        if (localStorage.hasOwnProperty(r)) {
+        if (localStorage.hasOwnProperty(`opt-auth-token-${encodeURIComponent(r)}`)) {
           return true
         }
       }
@@ -44,7 +44,8 @@ const Navbar = () => {
     setIsOpen(false)
 
     siteConfig.protectedRoutes.forEach(r => {
-      localStorage.removeItem(r)
+      localStorage.removeItem(`opt-auth-token-${encodeURIComponent(r)}`)
+      localStorage.removeItem(`opt-auth-pass-${encodeURIComponent(r)}`)
     })
 
     toast.success('Cleared all tokens')

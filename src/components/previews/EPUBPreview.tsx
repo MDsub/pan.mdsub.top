@@ -11,7 +11,7 @@ import { getStoredToken } from '../../utils/protectedRouteHandler'
 
 const EPUBPreview: FC<{ file: OdFileObject }> = ({ file }) => {
   const { asPath } = useRouter()
-  const hashedToken = getStoredToken(asPath)
+  const [_, token] = getStoredToken(asPath)
 
   const [epubContainerWidth, setEpubContainerWidth] = useState(400)
   const epubContainer = useRef<HTMLDivElement>(null)
@@ -53,7 +53,7 @@ const EPUBPreview: FC<{ file: OdFileObject }> = ({ file }) => {
             }}
           >
             <ReactReader
-              url={`/api/raw?path=${asPath}${hashedToken ? '&odpt=' + hashedToken : ''}`}
+              url={`/api/raw?path=${asPath}${token ? '&odpt=' + encodeURIComponent(token) : ''}`}
               getRendition={rendition => fixEpub(rendition)}
               loadingView={<Loading loadingText={'Loading EPUB ...'} />}
               location={location}

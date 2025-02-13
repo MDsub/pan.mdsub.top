@@ -3,7 +3,7 @@ import useSystemTheme from 'react-use-system-theme'
 import { useRouter } from 'next/router'
 
 import { LightAsync as SyntaxHighlighter } from 'react-syntax-highlighter'
-import { tomorrowNightEighties, tomorrow } from 'react-syntax-highlighter/dist/cjs/styles/hljs'
+import { tomorrow, tomorrowNightEighties } from 'react-syntax-highlighter/dist/cjs/styles/hljs'
 
 import useFileContent from '../../utils/fetchOnMount'
 import { getLanguageByFileName } from '../../utils/getPreviewType'

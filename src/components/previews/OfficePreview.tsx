@@ -11,13 +11,13 @@ import { getStoredToken } from '../../utils/protectedRouteHandler'
 
 const OfficePreview: FC<{ file: OdFileObject }> = ({ file }) => {
   const { asPath } = useRouter()
-  const hashedToken = getStoredToken(asPath)
+  const [_, token] = getStoredToken(asPath)
 
   const docContainer = useRef<HTMLDivElement>(null)
   const [docContainerWidth, setDocContainerWidth] = useState(600)
 
   const docUrl = encodeURIComponent(
-    `${getBaseUrl()}/api/raw?path=${asPath}${hashedToken ? `&odpt=${hashedToken}` : ''}`,
+    `${getBaseUrl()}/api/raw?path=${asPath}${token ? `&odpt=${encodeURIComponent(token)}` : ''}`,
   )
 
   useEffect(() => {

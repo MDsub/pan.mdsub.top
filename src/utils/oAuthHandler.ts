@@ -43,8 +43,8 @@ export function extractAuthCodeFromRedirected(url: string): string {
   return params.get('code') ?? ''
 }
 
-// After a successful authorisation, the code returned from the Microsoft OAuth 2.0 authorization URL
-// will be used to request an access token. This function requests the access token with the authorisation code
+// After a successful authorization, the code returned from the Microsoft OAuth 2.0 authorization URL
+// will be used to request an access token. This function requests the access token with the authorization code
 // and returns the access token and refresh token on success.
 export async function requestTokenWithAuthCode(
   code: string,

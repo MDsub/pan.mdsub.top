@@ -171,7 +171,7 @@ interface TraverseItem {
  * We will directly fetch API and arrange responses instead.
  * In folder tree, we visit folders top-down as concurrently as possible.
  * Every time we visit a folder, we fetch and return meta of all its children.
- * If folders have pagination, partically retrieved items are not returned immediately,
+ * If folders have pagination, partially retrieved items are not returned immediately,
  * but after all children of the folder have been successfully retrieved.
  * If an error occurred in paginated fetching, all children will be dropped.
  * @param path Folder to be traversed. The path should be cleaned in advance.
@@ -180,17 +180,16 @@ interface TraverseItem {
  * Error key in the item will contain the error when there is a handleable error.
  */
 export async function* traverseFolder(path: string): AsyncGenerator<TraverseItem, void, undefined> {
-  const hashedToken = getStoredToken(path)
+  const [pass, token] = getStoredToken(path)
 
   // Generate the task passed to Promise.race to request a folder
   const genTask = async (i: number, path: string, next?: string) => {
     return {
       i,
       path,
-      data: await fetcher([
-        next ? `/api?path=${path}&next=${next}` : `/api?path=${path}`,
-        hashedToken ?? undefined,
-      ]).catch(error => ({ i, path, error })),
+      data: await fetcher([next ? `/api?path=${path}&next=${next}` : `/api?path=${path}`, pass, token]).catch(
+        error => ({ i, path, error }),
+      ),
     }
   }
 

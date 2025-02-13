@@ -1,4 +1,4 @@
-import { FC, CSSProperties, ReactNode } from 'react'
+import { CSSProperties, FC, ReactNode } from 'react'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import remarkMath from 'remark-math'
@@ -26,7 +26,7 @@ const MarkdownPreview: FC<{
 
   const { response: content, error, validating } = useFileContent(`/api/raw?path=${parentPath}/${file.name}`, path)
 
-  // Check if the image is relative path instead of a absolute url
+  // Check if the image is relative path instead of an absolute url
   const isUrlAbsolute = (url: string | string[]) => url.indexOf('://') > 0 || url.indexOf('//') === 0
 
   // Custom components for rendering elements

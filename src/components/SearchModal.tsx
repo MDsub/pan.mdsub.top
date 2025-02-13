@@ -7,7 +7,7 @@ import useConstant from 'use-constant'
 
 import Link from 'next/link'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { Dialog, DialogPanel, DialogBackdrop, DialogTitle, Transition, TransitionChild } from '@headlessui/react'
+import { Dialog, DialogBackdrop, DialogPanel, DialogTitle, Transition, TransitionChild } from '@headlessui/react'
 
 import type { OdDriveItem, OdSearchResult } from '../types'
 import { LoadingIcon } from './Loading'
@@ -47,18 +47,13 @@ function useDriveItemSearch() {
   const [query, setQuery] = useState('')
   const searchDriveItem = async (q: string) => {
     const { data } = await axios.get<OdSearchResult>(`/api/search?q=${q}`)
-
-    // Map parentReference to the absolute path of the search result
-    data.map(item => {
-      item['path'] =
-        'path' in item.parentReference
-          ? // OneDrive International have the path returned in the parentReference field
-            `${mapAbsolutePath(item.parentReference.path)}/${encodeURIComponent(item.name)}`
-          : // OneDrive for Business/Education does not, so we need extra steps here
-            ''
-    })
-
-    return data
+    const items = await Promise.all(
+      data.map(async id => {
+        const { data } = await axios.get<OdDriveItem>(`/api/item?id=${id}`)
+        return data
+      }),
+    )
+    return items.filter((item): item is OdDriveItem => item !== null)
   }
 
   const debouncedDriveItemSearch = useConstant(() => AwesomeDebouncePromise(searchDriveItem, 1000))
@@ -83,7 +78,7 @@ function SearchResultItemTemplate({
   itemDescription,
   disabled,
 }: {
-  driveItem: OdSearchResult[number]
+  driveItem: OdDriveItem
   driveItemPath: string
   itemDescription: string
   disabled: boolean
@@ -114,7 +109,7 @@ function SearchResultItemTemplate({
   )
 }
 
-function SearchResultItemLoadRemote({ result }: { result: OdSearchResult[number] }) {
+function SearchResultItemLoadRemote({ result }: { result: OdDriveItem }) {
   const { data, error }: SWRResponse<OdDriveItem, { status: number; message: any }> = useSWR(
     [`/api/item?id=${result.id}`],
     fetcher,
@@ -130,6 +125,7 @@ function SearchResultItemLoadRemote({ result }: { result: OdSearchResult[number]
       />
     )
   }
+
   if (!data) {
     return (
       <SearchResultItemTemplate driveItem={result} driveItemPath={''} itemDescription={'Loading ...'} disabled={true} />
@@ -147,22 +143,8 @@ function SearchResultItemLoadRemote({ result }: { result: OdSearchResult[number]
   )
 }
 
-function SearchResultItem({ result }: { result: OdSearchResult[number] }) {
-  if (result.path === '') {
-    // path is empty, which means we need to fetch the parentReference to get the path
-    return <SearchResultItemLoadRemote result={result} />
-  } else {
-    // path is not an empty string in the search result, such that we can directly render the component as is
-    const driveItemPath = decodeURIComponent(result.path)
-    return (
-      <SearchResultItemTemplate
-        driveItem={result}
-        driveItemPath={result.path}
-        itemDescription={driveItemPath}
-        disabled={false}
-      />
-    )
-  }
+function SearchResultItem({ result }: { result: OdDriveItem }) {
+  return <SearchResultItemLoadRemote result={result} />
 }
 
 export default function SearchModal({

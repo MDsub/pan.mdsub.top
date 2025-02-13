@@ -27,6 +27,7 @@ module.exports = {
   // or E5 Subscription OneDrive for Business. You may need to change these if you are using OneDrive 世纪互联.
   authApi: process.env.NEXT_PUBLIC_AUTH_API || 'https://login.microsoftonline.com/common/oauth2/v2.0/token',
   driveApi: process.env.NEXT_PUBLIC_DRIVE_API || 'https://graph.microsoft.com/v1.0/me/drive',
+  searchApi: process.env.NEXT_PUBLIC_SEARCH_API || 'https://graph.microsoft.com/v1.0/search/query',
 
   // The scope we require are listed here, in most cases you would not need to change this as well.
   scope: 'user.read files.read.all offline_access',

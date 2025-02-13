@@ -7,10 +7,10 @@ import siteConfig from '../../../config/site.config'
 
 const PDFEmbedPreview: React.FC<{ file: any }> = ({ file }) => {
   const { asPath } = useRouter()
-  const hashedToken = getStoredToken(asPath)
+  const [_, token] = getStoredToken(asPath)
 
   const pdfPath = encodeURIComponent(
-    `${getBaseUrl()}/api/raw?path=${asPath}${hashedToken ? `&odpt=${hashedToken}` : ''}`,
+    `${getBaseUrl()}/api/raw?path=${asPath}${token ? `&odpt=${encodeURIComponent(token)}` : ''}`,
   )
 
   const urlPrefix = siteConfig.PDFPreviewUrlPrefix

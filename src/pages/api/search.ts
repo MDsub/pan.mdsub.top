@@ -1,6 +1,6 @@
 import axios from 'redaxios'
 
-import { encodePath, getAccessToken } from '.'
+import { getAccessToken } from '.'
 import apiConfig from '../../../config/api.config'
 import siteConfig from '../../../config/site.config'
 import { NextRequest, NextResponse } from 'next/server'
@@ -34,19 +34,32 @@ export default async function handler(req: NextRequest): Promise<Response> {
   // Query parameter from request
   const { q: searchQuery = '' } = Object.fromEntries(req.nextUrl.searchParams)
 
-   // Construct Microsoft Graph Search API URL, and perform search only under the base directory
-  const searchRootPath = encodePath('/')
-  const encodedPath = searchRootPath === '' ? searchRootPath : searchRootPath + ':'
-  const searchApi = `${apiConfig.driveApi}/root${encodedPath}/search(q='${sanitiseQuery(searchQuery)}')`
   try {
-    const { data } = await axios.get(searchApi, {
-      headers: { Authorization: `Bearer ${accessToken}` },
-      params: {
-        select: 'id,name,file,folder,parentReference',
-        top: siteConfig.maxItems,
+    const { data } = await axios.post(
+      apiConfig.searchApi,
+      {
+        requests: [
+          {
+            entityTypes: ['driveItem'],
+            query: {
+              queryString: sanitiseQuery(searchQuery),
+              size: siteConfig.maxItems,
+            },
+          },
+        ],
       },
-    })
-    return new NextResponse(JSON.stringify(data.value), {
+      {
+        headers: {
+          Authorization: `${accessToken}`,
+          'Content-Type': 'application/json',
+        },
+      },
+    )
+
+    const itemIds =
+      data.value?.[0]?.hitsContainers?.[0]?.hits?.map((hit: { resource: { id: any } }) => hit.resource.id) || []
+
+    return new NextResponse(JSON.stringify(itemIds), {
       status: 200,
       headers: {
         'Content-Type': 'application/json',

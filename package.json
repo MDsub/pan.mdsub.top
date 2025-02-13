@@ -10,22 +10,18 @@
     "format": "prettier 'src/**/*.{js,ts,jsx,tsx}' --write"
   },
   "dependencies": {
-    "@cloudflare/workers-types": "^4.20250129.0",
+    "@cloudflare/workers-types": "^4.20250204.0",
     "@fortawesome/fontawesome-svg-core": "^6.2.1",
     "@fortawesome/free-brands-svg-icons": "^6.2.1",
     "@fortawesome/free-regular-svg-icons": "^6.2.1",
     "@fortawesome/free-solid-svg-icons": "^6.2.1",
     "@fortawesome/react-fontawesome": "^0.2.0",
     "@headlessui/react": "^2.2.0",
-    "@tailwindcss/line-clamp": "^0.4.2",
-    "@vercel/analytics": "^1.0.1",
     "awesome-debounce-promise": "^2.1.0",
     "axios": "^1.7.9",
     "crypto-js": "^4.2.0",
-    "csstype": "^3.1.1",
     "dayjs": "^1.11.7",
     "emoji-regex": "^10.2.1",
-    "ioredis": "^5.3.0",
     "jszip": "^3.10.1",
     "mpegts.js": "^1.7.2",
     "next": "15.1.6",
@@ -36,7 +32,6 @@
     "react": "^19.0.0",
     "react-async-hook": "^4.0.0",
     "react-audio-player": "^0.17.0",
-    "react-copy-to-clipboard": "^5.0.3",
     "react-dom": "^19.0.0",
     "react-hot-toast": "^2.4.0",
     "react-hotkeys-hook": "^4.3.3",
@@ -50,21 +45,18 @@
     "rehype-sanitize": "^6.0.0",
     "remark-gfm": "^4.0.0",
     "remark-math": "^6.0.0",
-    "swr": "^2.0.3",
+    "swr": "^2.3.1",
     "tailwind-scrollbar": "^3.1.0",
     "totp-generator": "^1.0.0",
     "use-clipboard-copy": "^0.2.0",
     "use-constant": "^1.1.1",
-    "wrangler": "3.107.2"
+    "uuid": "^11.0.5"
   },
   "devDependencies": {
     "@cloudflare/next-on-pages": "^1.6.3",
-    "@types/cors": "^2.8.13",
     "@types/crypto-js": "^4.0.2",
-    "@types/node": "^22.13.0",
+    "@types/node": "^22.13.1",
     "@types/react": "^19.0.8",
-    "@types/react-copy-to-clipboard": "^5.0.4",
-    "@types/react-dom": "^19.0.3",
     "@types/react-syntax-highlighter": "^15.5.6",
     "autoprefixer": "^10.4.13",
     "eslint": "^9.19.0",
@@ -75,8 +67,7 @@
     "prettier-plugin-tailwindcss": "^0.6.11",
     "tailwindcss": "^3.4.17",
     "typescript": "5.7.3",
-    "vercel": "40.1.0"
-
+    "vercel": "^41.0.0"
   },
   "overrides": {
     "vercel": "$vercel"

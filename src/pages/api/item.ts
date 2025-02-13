@@ -24,9 +24,19 @@ export default async function handler(req: NextRequest): Promise<Response> {
     const { data } = await axios.get(itemApi, {
       headers: { Authorization: `Bearer ${accessToken}` },
       params: {
-        select: 'id,name,parentReference',
+        select: 'id,name,parentReference,file,folder',
       },
     })
+
+    // Check if the item is under baseDirectory
+    if (!data.parentReference.path.startsWith(`/drive/root:${siteConfig.baseDirectory}`)) {
+      return new NextResponse(JSON.stringify(null), {
+        headers: {
+          'content-type': 'application/json',
+          'Cache-Control': apiConfig.cacheControlHeader,
+        },
+      })
+    }
 
     // Remove baseDirectory
     data.parentReference.path = data.parentReference.path.replace(siteConfig.baseDirectory, '')

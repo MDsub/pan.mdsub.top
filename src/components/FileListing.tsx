@@ -11,7 +11,7 @@ import { useRouter } from 'next/router'
 import useLocalStorage from '../utils/useLocalStorage'
 import { getPreviewType, preview } from '../utils/getPreviewType'
 import { useProtectedSWRInfinite } from '../utils/fetchWithSWR'
-import { getExtension, getRawExtension, getFileIcon } from '../utils/getFileIcon'
+import { getExtension, getFileIcon, getRawExtension } from '../utils/getFileIcon'
 import { getStoredToken } from '../utils/protectedRouteHandler'
 import {
   DownloadingToast,
@@ -154,26 +154,60 @@ const FileListing: FC<{ query?: ParsedUrlQuery }> = ({ query }) => {
   }>({})
 
   const router = useRouter()
-  const hashedToken = getStoredToken(router.asPath)
-  const [layout, _] = useLocalStorage('preferredLayout', layouts[0])
+  const [pass, token] = getStoredToken(router.asPath)
+  const [layout] = useLocalStorage('preferredLayout', layouts[0])
 
   const path = queryToPath(query)
+  // `path` has already been encoded, but '/' is not encoded. So we need to decode and encode it.
+  const [_, setToken] = useLocalStorage(`opt-auth-token-${encodeURIComponent(decodeURIComponent(path))}`, '')
 
   const { data, error, size, setSize } = useProtectedSWRInfinite(path)
 
+  useEffect(() => {
+    if (error && error.status === 403) {
+      setToken(error.message.error as string)
+    }
+  }, [error, setToken])
+
   if (error) {
-    // If error includes 403 which means the user has not completed initial setup, redirect to OAuth page
+    // No password or password is incorrect
+    if (error.status === 400 || error.status === 401) {
+      return (
+        <PreviewContainer>
+          <Auth redirect={path} />
+        </PreviewContainer>
+      )
+    }
+
+    // Need to store opt-auth-token
     if (error.status === 403) {
+      // useEffect
+      router.reload()
+      return <div />
+    }
+
+    // Too many requests
+    if (error.status === 429) {
+      return (
+        <PreviewContainer>
+          <FourOhFour errorMsg={'Too many requests. Please try 30s later.'} />
+        </PreviewContainer>
+      )
+    }
+
+    // The user has not completed initial setup, redirect to OAuth page
+    if (error.status === 503) {
       router.push('/onedrive-oauth/step-1')
       return <div />
     }
 
     return (
       <PreviewContainer>
-        {error.status === 401 ? <Auth redirect={path} /> : <FourOhFour errorMsg={JSON.stringify(error.message)} />}
+        <FourOhFour errorMsg={`Error. Status: ${error.status}\nMessage: ${JSON.stringify(error.message)}`} />
       </PreviewContainer>
     )
   }
+
   if (!data) {
     return (
       <PreviewContainer>
@@ -239,7 +273,7 @@ const FileListing: FC<{ query?: ParsedUrlQuery }> = ({ query }) => {
         .filter(c => selected[c.id])
         .map(c => ({
           name: c.name,
-          url: `/api/raw?path=${path}/${encodeURIComponent(c.name)}${hashedToken ? `&odpt=${hashedToken}` : ''}`,
+          url: `/api/raw?path=${path}/${encodeURIComponent(c.name)}${token ? `&odpt=${encodeURIComponent(token)}` : ''}`,
         }))
 
       if (files.length == 1) {
@@ -273,7 +307,7 @@ const FileListing: FC<{ query?: ParsedUrlQuery }> = ({ query }) => {
         .filter(c => selected[c.id])
         .map(
           c =>
-            `${baseUrl}/api/raw?path=${path}/${encodeURIComponent(c.name)}${hashedToken ? `&odpt=${hashedToken}` : ''}`,
+            `${baseUrl}/api/raw?path=${path}/${encodeURIComponent(c.name)}${token ? `&odpt=${encodeURIComponent(token)}` : ''}`,
         )
         .join('\n')
     }
@@ -286,10 +320,10 @@ const FileListing: FC<{ query?: ParsedUrlQuery }> = ({ query }) => {
             toast.error(`Failed to download folder ${p}: ${error.status} ${error.message} Skipped it to continue.`)
             continue
           }
-          const hashedTokenForPath = getStoredToken(p)
+          const [_, tokenForPath] = getStoredToken(p)
           yield {
             name: c?.name,
-            url: `/api/raw?path=${p}${hashedTokenForPath ? `&odpt=${hashedTokenForPath}` : ''}`,
+            url: `/api/raw?path=${p}${tokenForPath ? `&odpt=${encodeURIComponent(tokenForPath)}` : ''}`,
             path: p,
             isFolder,
           }

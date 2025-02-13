@@ -30,7 +30,7 @@ export default async function handler(req: NextRequest): Promise<Response> {
 
   const cleanPath = pathPosix.resolve('/', pathPosix.normalize(path))
 
-  const { code, message } = await checkAuthRoute(cleanPath, accessToken, odpt as string)
+  const { code, message } = await checkAuthRoute(cleanPath, accessToken, '', decodeURIComponent(odpt))
   // Status code other than 200 means user has not authenticated yet
   if (code !== 200) {
     return new Response(JSON.stringify({ error: message }), { status: code })

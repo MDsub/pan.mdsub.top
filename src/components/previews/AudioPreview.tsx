@@ -20,14 +20,14 @@ enum PlayerState {
 
 const AudioPreview: FC<{ file: OdFileObject }> = ({ file }) => {
   const { asPath } = useRouter()
-  const hashedToken = getStoredToken(asPath)
+  const [_, token] = getStoredToken(asPath)
 
   const rapRef = useRef<ReactAudioPlayer>(null)
   const [playerStatus, setPlayerStatus] = useState(PlayerState.Loading)
   const [playerVolume, setPlayerVolume] = useState(1)
 
   // Render audio thumbnail, and also check for broken thumbnails
-  const thumbnail = `/api/thumbnail?path=${asPath}&size=medium${hashedToken ? `&odpt=${hashedToken}` : ''}`
+  const thumbnail = `/api/thumbnail?path=${asPath}&size=medium${token ? `&odpt=${encodeURIComponent(token)}` : ''}`
   const [brokenThumbnail, setBrokenThumbnail] = useState(false)
 
   useEffect(() => {
@@ -94,7 +94,7 @@ const AudioPreview: FC<{ file: OdFileObject }> = ({ file }) => {
 
             <ReactAudioPlayer
               className="h-11 w-full"
-              src={`/api/raw?path=${asPath}${hashedToken ? `&odpt=${hashedToken}` : ''}`}
+              src={`/api/raw?path=${asPath}${token ? `&odpt=${encodeURIComponent(token)}` : ''}`}
               ref={rapRef}
               controls
               preload="auto"
